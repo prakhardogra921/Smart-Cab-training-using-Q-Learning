@@ -11885,7 +11885,7 @@ div#notebook {
 <ul>
 <li>Smartcab doesn't move around. It is either idled at red light or at green light with no oncoming traffic.</li>
 <li>When Agent is idled at red light it receives a positive reward (approximately around 0 to 2). But the Agent is idled at green light it receives a negative reward (approximately around -3 to -5).</li>
-<li>Reward at red light is positive and Reward at green light is negative.</li>
+<li>Reward for being idle at red light is positive and reward for being idle at green light is negative.</li>
 </ul>
 
 </div>
@@ -16359,7 +16359,11 @@ lpmZmZmZWZ04wDIzMzMzM6sTB1hmZmZmZmZ18v8BZH7G4Ihvc8cAAAAASUVORK5CYII=
 <li>alpha = 0.3</li>
 </ul>
 </li>
-<li>This Q-Learner improved safety rating from F to A+ and reliability rating from F to A+.</li>
+<li>This Q-Learner improved safety rating from F to A+ and reliability rating from F to A+. Reason for that may be explained by a few things:<ul>
+<li>Number of training trials (dependent on value of tolerence and decay rate (a)) used (20 against 520) which means that this Q-Learner was trained more number of times. And hence, this Q-Learner got more iterations to accumulate the rewards/penalties/infractions.</li>
+<li>Learning Rate (0.5 against 0.3) which means that the learning rate was a little slower.</li>
+</ul>
+</li>
 <li>Q-Learner results show that the driving agent learnt an appropriate policy successfully.</li>
 <li>I am satisfied with these results.</li>
 </ul>
@@ -16404,8 +16408,14 @@ lpmZmZmZWZ04wDIzMzMzM6sTB1hmZmZmZmZ18v8BZH7G4Ihvc8cAAAAASUVORK5CYII=
 <ul>
 <li><p>An optimal policy can be:</p>
 <ul>
-<li>If smart cab is at the red light and if waypoint is forward or left then smart cab needs to stop otherise if there is no car on left going in the forward direction then it can move in right direction.</li>
-<li>If the light is green, simply go in the direction of the waypoint.</li>
+<li>If smart cab is at the red light:
+<pre><code>  - if waypoint is forward or left then smart cab needs to stop 
+  - otherise if there is no car on left going in the forward direction then it can move in right direction.</code></pre>
+</li>
+<li>If the light is green:
+<pre><code>  - yield to oncoming traffic
+  - otherwise move in the direction of the waypoint.</code></pre>
+</li>
 </ul>
 </li>
 <li><p>Investigating the 'sim_improved-learning.txt' text file, it is found that the policies seem correct.</p>
@@ -16421,12 +16431,12 @@ As we are required to move forward with red light in front of us, we should simp
 </li>
 <li><p>Another correct policy example:</p>
 
-<pre><code>('right', 'green', 'right', 'right', 'right')
--- forward : 0.44
--- right : 0.00
--- None : 0.00
--- left : 0.00
-Here, we can clearly see that going forward is the best choice because forward has the highest Q-value (and the only positive value).</code></pre>
+<pre><code>('left', 'green', 'right', None, None)
+-- forward : -0.11
+-- right : 0.07
+-- None : -4.38
+-- left : 2.07
+Here, we are required to move to left with the green light in front of us. And since, the vehicle on the left has to move to the right there is no issue with the smartcab taking a left turn. Suboptimal policy here is to move to the right and there is no major problem with that either, except doing this takes the smart cab even further from it's destination.</code></pre>
 </li>
 <li><p>Incorrect policy example:</p>
 
@@ -16435,7 +16445,7 @@ Here, we can clearly see that going forward is the best choice because forward h
 -- right : 0.37
 -- None : 0.00
 -- left : 0.00
-We are required to go left but there is red light in front of us. So we should stay idle. But the right action has the maximum Q-value. But doing this takes the smart cab even further from it's destination. But it might be possible that this action is correct according to the rules and hence is given high weights. Or it is possible that there were very few examples of this kind.</code></pre>
+We are required to go left but there is red light in front of us. So we should stay idle. But the right action has the maximum Q-value. But doing this takes the smart cab even further from it's destination. The reason that this is the highest Q-value is because the agent hasn't explored this state (all other Q-values are still set at 0).</code></pre>
 </li>
 </ul>
 </li>
