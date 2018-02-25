@@ -24,7 +24,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-        self.t = 0
+        self.t = 0 #trial number
 
 
     def reset(self, destination=None, testing=False):
@@ -41,7 +41,7 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
-        self.a = 0.01
+        self.a = 0.01 #decay rate
         self.t += 1
         if testing:
             self.epsilon = 0
@@ -77,6 +77,7 @@ class LearningAgent(Agent):
         # Set 'state' as a tuple of relevant data for the agent        
         
         state = (waypoint, inputs['light'], inputs['left'], inputs['right'], inputs['oncoming'])
+        
         if self.learning:
             self.createQ(state)
 
@@ -133,8 +134,6 @@ class LearningAgent(Agent):
             if self.epsilon > random.random():
                 action = random.choice(self.valid_actions)
             else:
-                #maxQ = self.get_maxQ(state)
-                #action = random.choice([action for action in self.valid_actions if self.Q[state][action] == maxQ])
                 action = random.choice([action for action, value in self.Q[state].items() if value == self.get_maxQ(state)])
         else:
             action = random.choice(self.valid_actions)
